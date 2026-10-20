@@ -1,0 +1,8 @@
+# Force InfinityFree to use your custom 404 page
+ErrorDocument 404 /404.html
+
+# Enable clean URLs (lets you visit /a instead of /a.html)
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.html -f
+RewriteRule ^(.*)$ $1.html [L]
