@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-Content-Type-Options" content="nosniff"/><meta name="referrer" content="same-origin"/>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dawn — Roblox executor</title>
+<meta name="description" content="Dawn is a Roblox executor for Windows — attach, execute, read Roblox output live in the terminal. In-depth docs, API reference and setup guides.">
+<link rel="icon" href="assets/dawn-logo.png">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<video id="rain" aria-hidden="true" autoplay loop muted playsinline src="assets/rain.mp4"></video>
+<header class="topbar">
+<meta http-equiv="X-Content-Type-Options" content="nosniff"/><meta name="referrer" content="same-origin"/>
+<button class="sidebar-toggle" id="sidebar-toggle" aria-label="Menu">
+<svg class="hb" viewBox="0 0 24 24"><line class="l1" x1="4" y1="7" x2="20" y2="7"/><line class="l2" x1="4" y1="12" x2="20" y2="12"/><line class="l3" x1="4" y1="17" x2="20" y2="17"/></svg>
+</button>
+<a class="brand" href="#/">
+<img src="assets/dawn-logo.png" alt="">
+<span class="wordmark">Dawn</span>
+</a>
+<div class="spacer"></div>
+<a class="btn-primary topbar-cta" href="https://discord.gg/mSrVTkRJK4" target="_blank" rel="noopener">Download on Discord</a>
+</header>
+<div class="shell">
+<div class="sidebar-scrim" id="sidebar-scrim"></div>
+<nav class="sidebar">
+<div class="nav-group">
+<div class="nav-group-name">Start</div>
+<a class="nav-item" data-route="#/" href="#/">Home</a>
+<a class="nav-item" data-route="#/docs/overview" href="#/docs/overview">Overview</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-name">Documentation</div>
+<a class="nav-item" data-route="#/docs/install" href="#/docs/install">Installation</a>
+<a class="nav-item" data-route="#/docs/getting-started" href="#/docs/getting-started">Getting started</a>
+<a class="nav-item" data-route="#/docs/editor" href="#/docs/editor">Script editor</a>
+<a class="nav-item" data-route="#/docs/hotkeys" href="#/docs/hotkeys">Hotkeys</a>
+<a class="nav-item" data-route="#/docs/console" href="#/docs/console">Console output</a>
+<a class="nav-item" data-route="#/docs/scripthub" href="#/docs/scripthub">Script hub</a>
+<a class="nav-item" data-route="#/docs/autoexec" href="#/docs/autoexec">AutoExec</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-name">Reference</div>
+<a class="nav-item" data-route="#/docs/api" href="#/docs/api">API reference</a>
+<a class="nav-item" data-route="#/docs/files" href="#/docs/files">File layout</a>
+<a class="nav-item" data-route="#/docs/uninstall" href="#/docs/uninstall">Uninstall</a>
+<a class="nav-item" data-route="#/docs/troubleshooting" href="#/docs/troubleshooting">Troubleshooting</a>
+<a class="nav-item" data-route="#/docs/faq" href="#/docs/faq">FAQ</a>
+</div>
+<div class="nav-group">
+<div class="nav-group-name">Project</div>
+<a class="nav-item" data-route="#/changelog" href="#/changelog">Changelog</a>
+</div>
+</nav>
+<main id="page-body">
+<section class="page" id="home">
+<div class="content">
+<div class="hero">
+<div class="gridlines" aria-hidden="true"></div>
+<h1><span class="word">Dawn</span> is a Roblox executor<br>that feels like a native app.</h1>
+<p class="sub">Attach to any running client, edit scripts in a tabbed editor, watch Roblox output stream live into the terminal and remap every hotkey without touching a config file by hand.</p>
+<div class="cta-row">
+<a class="btn-primary" href="https://discord.gg/mSrVTkRJK4" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.369A19.791 19.791 0 0015.885 3c-.545.946-1.073 2.094-1.47 3.077a18.9 18.9 0 00-5.114 0A16.1 16.1 0 007.831 3a19.739 19.739 0 00-4.44 1.371C.75 8.596.222 12.693.554 16.723a19.87 19.87 0 006 3.019 14.53 14.53 0 001.208-1.983 12.93 12.93 0 01-1.9-.9c.16-.119.316-.24.465-.364a14.18 14.18 0 0012.323 0c.151.128.307.249.466.364-.61.361-1.253.666-1.92.905.53 1.229 1.151 2.373 1.978 3.418a19.83 19.83 0 006.002-3.02c.398-4.68-.681-8.74-2.787-12.393zM8.984 14.785c-1.183 0-2.157-1.085-2.157-2.419s.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.419 0 1.334-.956 2.419-2.157 2.419zm6.041 0c-1.184 0-2.157-1.085-2.157-2.419s.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.419 0 1.334-.946 2.419-2.157 2.419z"/></svg>Download on Discord</a>
+<a class="btn-secondary" href="#/docs/overview">Explore the executor</a>
+<a class="btn-secondary" href="https://discord.gg/mSrVTkRJK4" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.369A19.791 19.791 0 0015.885 3c-.545.946-1.073 2.094-1.47 3.077a18.9 18.9 0 00-5.114 0A16.1 16.1 0 007.831 3a19.739 19.739 0 00-4.44 1.371C.75 8.596.222 12.693.554 16.723a19.87 19.87 0 006 3.019 14.53 14.53 0 001.208-1.983 12.93 12.93 0 01-1.9-.9c.16-.119.316-.24.465-.364a14.18 14.18 0 0012.323 0c.151.128.307.249.466.364-.61.361-1.253.666-1.92.905.53 1.229 1.151 2.373 1.978 3.418a19.83 19.83 0 006.002-3.02c.398-4.68-.681-8.74-2.787-12.393zM8.984 14.785c-1.183 0-2.157-1.085-2.157-2.419s.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.419 0 1.334-.956 2.419-2.157 2.419zm6.041 0c-1.184 0-2.157-1.085-2.157-2.419s.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.419 0 1.334-.946 2.419-2.157 2.419z"/></svg> Discord</a>
+</div>
+<div class="meta-row"><span>Windows 10/11 · 64-bit</span><span>Lua / Luau environment</span><span>one-exe installer · configs preserved</span></div>
+</div>
+<div class="home-divider">Get Dawn</div>
+<div class="dl-panel">
+<div class="dl-glow" aria-hidden="true"></div>
+<div class="dl-copy">
+<h3>Download Dawn on Discord</h3>
+<p>The current release lives in the Dawn Discord server — join, grab <code>Bootstrapper.install.exe</code> from the download channel and it installs the executor plus everything it needs, keeps an uninstaller ready in the folder and never deletes your configs.</p>
+<div class="dl-row">
+<a class="btn-primary" href="https://discord.gg/mSrVTkRJK4" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.369A19.791 19.791 0 0015.885 3c-.545.946-1.073 2.094-1.47 3.077a18.9 18.9 0 00-5.114 0A16.1 16.1 0 007.831 3a19.739 19.739 0 00-4.44 1.371C.75 8.596.222 12.693.554 16.723a19.87 19.87 0 006 3.019 14.53 14.53 0 001.208-1.983 12.93 12.93 0 01-1.9-.9c.16-.119.316-.24.465-.364a14.18 14.18 0 0012.323 0c.151.128.307.249.466.364-.61.361-1.253.666-1.92.905.53 1.229 1.151 2.373 1.978 3.418a19.83 19.83 0 006.002-3.02c.398-4.68-.681-8.74-2.787-12.393zM8.984 14.785c-1.183 0-2.157-1.085-2.157-2.419s.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.419 0 1.334-.956 2.419-2.157 2.419zm6.041 0c-1.184 0-2.157-1.085-2.157-2.419s.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.419 0 1.334-.946 2.419-2.157 2.419z"/></svg>Download on Discord</a>
+<a class="btn-secondary" href="#/docs/getting-started">Setup guide</a>
+</div>
+</div>
+<div class="dl-side">
+<span>%LOCALAPPDATA%\Dawn</span>
+<span>one folder · clean uninstall</span>
+<span>inbox launcher · auto-staging layout</span>
+</div>
+</div>
+<div class="home-divider">The executor</div>
+<div class="grid-3">
+<div class="home-feature"><span class="fold"><span class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="6.2"/><path d="M12 2.6v3.2M12 18.2v3.2M2.6 12h3.2M18.2 12h3.2"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/></svg></span><span class="n">01</span></span><h3>Attach to any client</h3><p>Instant attach to a running Roblox, or bind Quick Attach to your own combo and skip the button entirely.</p></div>
+<div class="home-feature"><span class="fold"><span class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="4.5" width="18" height="15" rx="2.5"/><path d="M3 9h18M7.5 6.8h.01M10.5 6.8h.01"/><path d="M8.5 12.8l2 2-2 2"/></svg></span><span class="n">02</span></span><h3>Tabbed script editor</h3><p>Multiple tabs per session, syntax highlighting, instant fetch-from-url and tabs that restore with their code after a restart.</p></div>
+<div class="home-feature"><span class="fold"><span class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 7.5l4 4-4 4"/><path d="M12.5 16.5H19"/></svg></span><span class="n">03</span></span><h3>Live console output</h3><p>Roblox's own output streams into Dawn's terminal tab, with per-stream redirection control where it matters.</p></div>
+</div>
+<div class="grid-3">
+<div class="home-feature"><span class="fold"><span class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="11" cy="11" r="6.2"/><path d="M15.8 15.8L20 20"/></svg></span><span class="n">04</span></span><h3>Script hub</h3><p>Search a script library by name, switch categories, run straight from the hub — no copy-paste limbo.</p></div>
+<div class="home-feature"><span class="fold"><span class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M15.5 3.5v5h5"/><rect x="5.5" y="3.5" width="10" height="5" rx="1.2"/><rect x="3.5" y="8.5" width="5" height="5" rx="1.2"/><rect x="8.5" y="13.5" width="5" height="5" rx="1.2"/><rect x="13.5" y="8.5" width="7" height="10" rx="1.6"/></svg></span><span class="n">05</span></span><h3>Global hotkeys</h3><p>Execute, kill the client, attach — trigger any of it from anywhere in Windows with your own keybinds.</p></div>
+<div class="home-feature"><span class="fold"><span class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="8.4"/><path d="M10 8.8l5.4 3.2-5.4 3.2z" fill="currentColor" stroke="none"/></svg></span><span class="n">06</span></span><h3>AutoExec</h3><p>Drop scripts in the AutoExec folder and they run on their own schedule after attach.</p></div>
+</div>
+<div class="home-divider">Inside the docs</div>
+<div class="grid-3">
+<a class="home-feature" href="#/docs/getting-started"><span class="fold"><span class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M13 3.8L5.2 13.4h5L10.6 20l7.8-9.6h-5z"/></svg></span><span class="n">01</span></span><h3>Getting started</h3><p>Install, attach to your first client and run a script in under two minutes.</p></a>
+<a class="home-feature" href="#/docs/api"><span class="fold"><span class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8.5 7.5L5 12l3.5 4.5M15.5 7.5L19 12l-3.5 4.5M13 5.5l-2.4 13"/></svg></span><span class="n">02</span></span><h3>API reference</h3><p>Every global the module hands your scripts — getgenv, cloneref, hookfunction and friends.</p></a>
+<a class="home-feature" href="#/docs/uninstall"><span class="fold"><span class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 7h14M10 11v6M14 11v6M6.5 7l1 12h9l1-12M9.5 7V4.8h5V7"/></svg></span><span class="n">03</span></span><h3>Uninstall &amp; files</h3><p>What lives where, what gets kept, and how the built-in uninstaller erases the rest.</p></a>
+</div>
+<div class="platform-note">
+Dawn ships as a single signed-by-hand bootstrapper — one exe installs Dawn, keeps an uninstaller ready and never deletes your configs.
+</div>
+</div>
+</section>
+<section class="page" id="docs/overview">
+<div class="body-cols">
+<article class="content">
+<div class="crumbs">DAWN / <b>OVERVIEW</b></div>
+<h1 class="doc-title">Overview</h1>
+<p class="doc-lead">What Dawn is, where it runs and how its version numbers line up.</p>
+<h2 id="what">What Dawn is</h2>
+<p>Dawn is a script executor for Roblox on Windows. The desktop app (the <code>Dawn</code> window) is the control surface: attach, editor, script hub, terminal, settings. The actual execution environment loads inside the Roblox client through a module that the bundled injector places on attach.</p>
+<p>The pair talks over a local bridge: the editor sends code, the client runs it, and Roblox output flows back into the terminal tab.</p>
+<h2 id="versions">Version identifiers</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Identifier</th><th>Value</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><strong>Windows status</strong></td><td><code>working</code></td><td>Whether the current executor is verified against the current Roblox version. Shown live on the Home tab.</td></tr>
+<tr><td><strong>Roblox version</strong></td><td>live</td><td>Ideal Roblox support window vs. your currently installed client; Dawn warns when the client drifts.</td></tr>
+</tbody>
+</table></div>
+<p>After a Roblox update, check the Home tab first — Dawn reports the exact mismatch instead of failing silently mid-attach.</p>
+<h2 id="platform">Platform requirements</h2>
+<ul>
+<li>Windows 10 or 11, 64-bit (Windows 11 is the test target).</li>
+<li>.NET Framework 4.8 runtime — ships with all current Windows installs.</li>
+<li>Any Roblox client version inside the current support window.</li>
+</ul>
+<div class="callout"><span class="co-tag">note</span>
+<span>Install size is small and the whole thing lives in one folder — <code>%LOCALAPPDATA%\Dawn</code> by default. Nothing writes outside that folder except shortcuts and the uninstall registry entry.</span>
+</div>
+</article>
+<aside class="content-toc" id="toc-host"><div class="toc-name">On this page</div><div id="toc"></div></aside>
+</div>
+</section>
+<section class="page" id="docs/install">
+<div class="body-cols">
+<article class="content">
+<div class="crumbs">DAWN / <b>INSTALLATION</b></div>
+<h1 class="doc-title">Installation</h1>
+<p class="doc-lead">One exe does the whole job: install, repair, uninstall — no dependencies to gather first.</p>
+<h2 id="get">Get the bootstrapper</h2>
+<p>Grab the current release's <code>Bootstrapper.install.exe</code> (about 11&nbsp;MB) from the Dawn Discord server — it's the only file you need, everything else is packed inside it.</p>
+<div class="dl-inline">
+<a class="btn-primary" href="https://discord.gg/mSrVTkRJK4" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.369A19.791 19.791 0 0015.885 3c-.545.946-1.073 2.094-1.47 3.077a18.9 18.9 0 00-5.114 0A16.1 16.1 0 007.831 3a19.739 19.739 0 00-4.44 1.371C.75 8.596.222 12.693.554 16.723a19.87 19.87 0 006 3.019 14.53 14.53 0 001.208-1.983 12.93 12.93 0 01-1.9-.9c.16-.119.316-.24.465-.364a14.18 14.18 0 0012.323 0c.151.128.307.249.466.364-.61.361-1.253.666-1.92.905.53 1.229 1.151 2.373 1.978 3.418a19.83 19.83 0 006.002-3.02c.398-4.68-.681-8.74-2.787-12.393zM8.984 14.785c-1.183 0-2.157-1.085-2.157-2.419s.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.419 0 1.334-.956 2.419-2.157 2.419zm6.041 0c-1.184 0-2.157-1.085-2.157-2.419s.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.419 0 1.334-.946 2.419-2.157 2.419z"/></svg>Download on Discord</a>
+<span class="dl-inline-meta"><code>Bootstrapper.install.exe</code> · installer + executor + module, one file</span>
+</div>
+<div class="callout warn"><span class="co-tag">notice</span>
+<span>Windows SmartScreen may ask about the exe on first run because it isn't signed with a store certificate. Choose <strong>More info → Run anyway</strong>.</span>
+</div>
+<h2 id="checksum">Verify the download (SHA-256)</h2>
+<div class="verify-drop" id="verify-drop">
+<div class="drop-head">Drop <code>Bootstrapper.install.exe</code> here</div>
+<div class="drop-sub">or <label class="drop-link" for="verify-picker">choose the file</label> — the hash is computed locally in your browser and checked against the current release automatically.</div>
+<input type="file" id="verify-picker" accept=".exe" hidden>
+<div class="verify-result" id="verify-result" data-state="idle" aria-live="polite"></div>
+</div>
+<p class="verify-manual">Prefer the terminal? No extra software needed, Windows has the tools built in:</p>
+<div class="code-block"><div class="code-head">powershell<button class="copy-btn" type="button">copy</button></div>
+<pre>Get-FileHash "C:\path\to\Bootstrapper.install.exe" -Algorithm SHA256</pre></div>
+<div class="code-block"><div class="code-head">cmd<button class="copy-btn" type="button">copy</button></div>
+<pre>certutil -hashfile "C:\path\to\Bootstrapper.install.exe" SHA256</pre></div>
+<p>Either command prints the SHA-256 digest. Compare it against the current release:</p>
+<div class="code-block"><div class="code-head">current release · sha-256<button class="copy-btn" type="button">copy</button></div>
+<pre>d58fcc6a93701a390934dff63671d3bdf1ed4fd3d0a178adabacbb9f28d824ed</pre></div>
+<div class="callout"><span class="co-tag">note</span>
+<span>Replace <code>C:\path\to\Bootstrapper.install.exe</code> with the actual path to your download. A mismatch means the file changed in transit — grab it again from the Discord server.</span>
+</div>
+<h2 id="wizard">The install flow</h2>
+<ol>
+<li>Run <code>Bootstrapper.install.exe</code>. Dawn's own installer window opens — no separate wizard theme.</li>
+<li><strong>Install to</strong> shows the default folder, <code>%LOCALAPPDATA%\Dawn</code>. Use <strong>Browse</strong> to pick another spot and the button flips between <strong>Install</strong> and <strong>Repair</strong> based on what's already in the target folder.</li>
+<li>Tick what you want up front:
+<ul>
+<li><strong>Defender exclusions</strong> — adds the install folder as an antivirus exclusion through one UAC prompt. Recommended: it stops the module from being scanned or quarantined after install. Declining the prompt simply skips exclusions.</li>
+<li><strong>Desktop shortcut</strong> — <code>Dawn.lnk</code> plus an <code>Uninstall Dawn.lnk</code>.</li>
+<li><strong>Launch when done</strong> — opens Dawn immediately.</li>
+</ul>
+</li>
+<li>Install extracts the payload, places an <code>Uninstall Dawn.exe</code> inside the folder and registers Dawn in <strong>Settings → Apps → Installed apps</strong> so it uninstalls like any store-less app.</li>
+</ol>
+<p>Over an existing install the same exe performs a <strong>repair</strong>: files refresh in place, running Dawn blocks it politely (close Dawn first — nothing is force-killed).</p>
+<h2 id="silent">Silent installs</h2>
+<p>The bootstrapper takes flags for scripting and automation; silent installs touch nothing outside the folder unless asked:</p>
+<div class="code-block"><div class="code-head">cmd / powershell<button class="copy-btn" type="button">copy</button></div>
+<pre>Bootstrapper.install.exe --verify "C:\path\to\test-dir"   &amp;:: unpack + status lines, zero side effects
+Bootstrapper.install.exe --install "C:\My\Dawn"           &amp;:: install, nothing extra
+Bootstrapper.install.exe --install "C:\My\Dawn" --shortcuts --auto-launch --defender
+Bootstrapper.install.exe --launch "C:\My\Dawn"            &amp;:: start Dawn.exe from a path
+Bootstrapper.install.exe --uninstall "C:\My\Dawn"         &amp;:: silent payload removal</pre></div>
+<h2 id="first-run">First launch</h2>
+<p>Dawn opens on the <strong>Home</strong> tab: executor version, API version, Roblox support and Windows status — all live. If a key panel appears on first run, that flow lives there too.</p>
+<p>Head to <a href="#/docs/getting-started">Getting started</a> from here.</p>
+</article>
+<aside class="content-toc" id="toc-host"><div class="toc-name">On this page</div><div id="toc"></div></aside>
+</div>
+</section>
+<section class="page" id="docs/getting-started">
+<div class="body-cols">
+<article class="content">
+<div class="crumbs">DAWN / <b>GETTING STARTED</b></div>
+<h1 class="doc-title">Getting started</h1>
+<p class="doc-lead">Open Dawn, open Roblox, execute your first script — three moves.</p>
+<h2 id="attach">Attach</h2>
+<p>Start Roblox first, then Dawn (order doesn't matter for the client, but attach needs an <em>alive</em> Roblox). On the Home tab, use <strong>Attach</strong>.</p>
+<ul>
+<li>The client list reads the running Roblox processes — pick or auto-select when there's only one.</li>
+<li>If you bound <a href="#/docs/hotkeys">Quick Attach</a>, <span class="kbd">attach</span> works from anywhere — no window focus needed.</li>
+<li>Attach is <strong>per client, one at a time</strong>: one Dawn module per Roblox instance.</li>
+</ul>
+<div class="callout"><span class="co-tag">note</span>
+<span>Attach grabs the <em>first</em> Roblox it finds. Second windows opened after attach aren't picked up automatically — attach while exactly one client is running if you need precision.</span>
+</div>
+<h2 id="first-script">Your first script</h2>
+<p>Open the editor, drop one line in and execute:</p>
+<div class="code-block"><div class="code-head">luau<button class="copy-btn" type="button">copy</button></div>
+<pre>-<span class="code-comment">- verify the environment is alive where you expect it</span>
+<span class="code-func">identifyexecutor</span>()
+<span class="code-comment">-<sub>-</sub> classic</span>
+<span class="code-func">print</span>(<span class="code-string">"hello from Dawn"</span>)</pre></div>
+<p>Execute with <span class="kbd">Ctrl + Enter</span> in the editor, the <strong>Execute</strong> button, or your global <a href="#/docs/hotkeys">Execute hotkey</a>. Roblox's responses and prints land in the terminal tab, streamed live.</p>
+<h2 id="workspace">Where scripts live</h2>
+<p>Dawn reads three folders under its install root:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Folder</th><th>Role</th></tr></thead>
+<tbody>
+<tr><td class="path-cell">Scripts\</td><td>Your script library — browse and run them through the UI.</td></tr>
+<tr><td class="path-cell">AutoExec\</td><td>Drop scripts here that should run without you opening a tab every session. See <a href="#/docs/autoexec">AutoExec</a>.</td></tr>
+<tr><td class="path-cell">Workspace\</td><td>Working files and folders the editor trusts blindly.</td></tr>
+</tbody>
+</table></div>
+<h2 id="next">Next steps</h2>
+<ul>
+<li>Remap execution to your own combo — <a href="#/docs/hotkeys">Hotkeys</a></li>
+<li>Watch Roblox output without moving windows — <a href="#/docs/console">Console output</a></li>
+<li>Grab ready scripts by search — <a href="#/docs/scripthub">Script hub</a></li>
+<li>Load functions down in the client — <a href="#/docs/api">API reference</a></li>
+</ul>
+</article>
+<aside class="content-toc" id="toc-host"><div class="toc-name">On this page</div><div id="toc"></div></aside>
+</div>
+</section>
+<section class="page" id="docs/editor">
+<div class="body-cols">
+<article class="content">
+<div class="crumbs">DAWN / <b>SCRIPT EDITOR</b></div>
+<h1 class="doc-title">Script editor</h1>
+<p class="doc-lead">Tabs, restoration and the moves that get code into the client.</p>
+<h2 id="tabs">Tabs</h2>
+<p>The editor works tab-first. Open as many tabs as you need, rename in place, close independently. Tabs survive the app closing: after a restart they come back <strong>with their code</strong>, so losing a slowly-built script to a reboot isn't a thing.</p>
+<h2 id="execute">Executing</h2>
+<ul>
+<li><span class="kbd">Ctrl + Enter</span> — execute the focused tab. This is also Dawn's default global <a href="#/docs/hotkeys">Execute hotkey</a>, so it triggers with the same combo even when the window isn't focused — a master toggle in Settings → Hotkeys turns that off.</li>
+<li>The <strong>Execute</strong> button — runs the active tab.</li>
+</ul>
+<h2 id="save">Saving</h2>
+<p><span class="kbd">Ctrl + S</span> saves the current tab to disk. Editor behaviour — autosave intervals and how the editor handles untitled buffers — sits in <strong>Settings → Editor</strong>; file browse behaviour (how folders and file open/save dialogs behave) lives under <strong>Settings → Explorer</strong>.</p>
+<h2 id="url">Fetch a script from URL</h2>
+<p>Paste a raw script URL into the browse bar and Dawn pulls the body straight into a tab. Great for hosted gists and raw files — no clipboard trip.</p>
+<h2 id="github">GitHub backup</h2>
+<p>The editor also carries GitHub integration: point it at a repo with your token and push your scripts up, browse repos and restore files from them. Token entry lives inside the editor's GitHub panel — it stays local to your machine.</p>
+<h2 id="folders">Folders Dawn trusts</h2>
+<p>All file operations are rooted in the <a href="#/docs/files">install folder layout</a>: <code>Scripts\</code>, <code>AutoExec\</code>, <code>Workspace\</code>. Organize those three freely — the explorer shows what's on disk in real time.</p>
+<div class="callout"><span class="co-tag">tip</span>
+<span>Keep heavy loops out of tabs you execute from hotkeys. A runaway <code>while true</code> executes exactly where it was fired from — the <a href="#/docs/hotkeys">Kill Roblox hotkey</a> is there for those exact moments.</span>
+</div>
+</article>
+<aside class="content-toc" id="toc-host"><div class="toc-name">On this page</div><div id="toc"></div></aside>
+</div>
+</section>
+<section class="page" id="docs/hotkeys">
+<div class="body-cols">
+<article class="content">
+<div class="crumbs">DAWN / <b>HOTKEYS</b></div>
+<h1 class="doc-title">Hotkeys</h1>
+<p class="doc-lead">Everything triggerable in Dawn has a remappable combo under Settings → Hotkeys.</p>
+<h2 id="master">The master switch</h2>
+<p><strong>Enabled Hotkeys</strong> gates the whole system. Off means: no global triggers fire anywhere, editor-local shortcuts still work.</p>
+<h2 id="list">The three commands</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Command</th><th>Default</th><th>What it does</th></tr></thead>
+<tbody>
+<tr><td><strong>Execute Script</strong></td><td><span class="kbd">Ctrl + Enter</span></td><td>Runs the focused script — works globally, from any app.</td></tr>
+<tr><td><strong>Kill Roblox</strong></td><td>your choice</td><td>Closes the attached Roblox instantly. The panic button.</td></tr>
+<tr><td><strong>Quick Attach</strong></td><td>your choice</td><td>Run-time attach with zero clicks — bind and dump them before you can say attach.</td></tr>
+</tbody>
+</table></div>
+<h2 id="remap">Remapping</h2>
+<ol>
+<li>Open <strong>Settings → Hotkeys</strong>.</li>
+<li>Click the combo field you want to change and press the new combination — the field records what you press.</li>
+<li>The binding is live immediately; settings persist between sessions.</li>
+</ol>
+<p>Dawn deliberately divides hotkeys by behaviour rather than typing "<code>Ctrl</code> is always X": an unattached window shares execution across tabs and never fights with Roblox overlays.</p>
+<div class="callout warn"><span class="co-tag">heads up</span>
+<span>While <strong>Enabled Hotkeys</strong> is on, the Kill Roblox combo works system-wide — think before choosing a combo you tap by accident.</span>
+</div>
+</article>
+<aside class="content-toc" id="toc-host"><div class="toc-name">On this page</div><div id="toc"></div></aside>
+</div>
+</section>
+<section class="page" id="docs/console">
+<div class="body-cols">
+<article class="content">
+<div class="crumbs">DAWN / <b>CONSOLE OUTPUT</b></div>
+<h1 class="doc-title">Console output</h1>
+<p class="doc-lead">Roblox's own print, warn and error output — surfaced inside Dawn, live.</p>
+<h2 id="terminal">The terminal tab</h2>
+<p>When Dawn is attached, everything the client prints lands in Dawn's <strong>Terminal</strong> tab stream-fresh. Errors from a failed <code>Ctrl + Enter</code> show up here in-copy, which makes "why did this not run" a five-second read instead of a blind retry loop.</p>
+<h2 id="redirection">Console redirection</h2>
+<p><strong>Console redirection</strong> routes Roblox's output streams into Dawn with per-stream control — you choose when it belongs in the terminal and when Roblox keeps its normal console. The toggle and its per-stream entries live in <strong>Settings</strong>.</p>
+<ul>
+<li>Useful for heavier sessions where stdout would flood the terminal.</li>
+<li>Turning redirection off never stops Dawn from showing her own result progress — it purely controls client stream capture.</li>
+</ul>
+<h2 id="debuglog">dawn_debug.log</h2>
+<p>App-side diagnostics land in <code>dawn_debug.log</code> inside the install folder. Attach trouble, config oddities, stream failures — if the terminal looks too quiet, the log has the app-side truth. It stays in place from run to run; the <a href="#/docs/uninstall">uninstaller</a> clears it with the payload.</p>
+</article>
+<aside class="content-toc" id="toc-host"><div class="toc-name">On this page</div><div id="toc"></div></aside>
+</div>
+</section>
+<section class="page" id="docs/scripthub">
+<div class="body-cols">
+<article class="content">
+<div class="crumbs">DAWN / <b>SCRIPT HUB</b></div>
+<h1 class="doc-title">Script hub</h1>
+<p class="doc-lead">Browse, search and run library scripts without touching a file dialog.</p>
+<h2 id="search">Search</h2>
+<p>The hub's search input filters the library by name as you type — press <span class="kbd">Enter</span> to run the search and see the results grid. From there it's open-in-editor or run-in-place.</p>
+<h2 id="categories">Categories</h2>
+<p>Scripts sort by category so the pile stays navigable — pick a category, browse normally, search inside it. Running a script loads it into the current client like anything executed from the editor, so the same <a href="#/docs/console">terminal output</a> shows the results.</p>
+<div class="callout"><span class="co-tag">note</span>
+<span>Library scripts are third-party content: read what a script does before you run it. Dawn runs it into the attached client exactly as the author wrote it.</span>
+</div>
+</article>
+<aside class="content-toc" id="toc-host"><div class="toc-name">On this page</div><div id="toc"></div></aside>
+</div>
+</section>
+<section class="page" id="docs/autoexec">
+<div class="body-cols">
+<article class="content">
+<div class="crumbs">DAWN / <b>AUTOEXEC</b></div>
+<h1 class="doc-title">AutoExec</h1>
+<p class="doc-lead">Scripts that load themselves after attach — configuration as code, no clicks.</p>
+<h2 id="how">How it works</h2>
+<p>Any <code>.lua</code> / <code>.luau</code> file you drop into the <code>AutoExec\</code> folder of the install root gets queued per attach. The intended routine:</p>
+<ol>
+<li>Attach to a Roblox client.</li>
+<li>Dawn walks <code>AutoExec\</code> and runs each script on its own, in name order.</li>
+<li>Output shows up in the <a href="#/docs/console">terminal</a> like any other execution.</li>
+</ol>
+<h2 id="uses">What people use it for</h2>
+<ul>
+<li>Environment guards that bring <code>getgenv()</code> configuration tables back each session.</li>
+<li>Per-game or per-account configuration that resets on every login otherwise.</li>
+<li>Tiny wrappers that make library scripts one save away from running.</li>
+</ul>
+<div class="code-block"><div class="code-head">AutoExec\my-config.luau<button class="copy-btn" type="button">copy</button></div>
+<pre><span class="code-comment">-- written by you, loaded by Dawn on attach</span>
+<span class="code-keyword">local</span> cfg = <span class="code-func">getgenv</span>()
+cfg.selected = <span class="code-string">"primary"</span>
+cfg.verbose  = <span class="code-number">true</span>
+<span class="code-func">print</span>(<span class="code-string">"[autoexec] config loaded"</span>)</pre></div>
+<div class="callout warn"><span class="co-tag">heads up</span>
+<span>AutoExec runs whatever is in the folder — treat it like shell startup scripts. Only keep files you wrote or reviewed.</span>
+</div>
+</article>
+<aside class="content-toc" id="toc-host"><div class="toc-name">On this page</div><div id="toc"></div></aside>
+</div>
+</section>
+<section class="page" id="docs/api">
+<div class="body-cols">
+<article class="content">
+<div class="crumbs">DAWN / <b>API REFERENCE</b></div>
+<h1 class="doc-title">API reference</h1>
+<p class="doc-lead">The function surface the Dawn module loads into the Roblox client, as executed by <code>identifyexecutor()</code>.</p>
+<p>Everything below lives in the <em>client's</em> Lua environment after attach — the same globals scripts use. Dawn's own app behaviour (hotkeys, file dialogs, settings) is not part of this API.</p>
+<h2 id="env">getgenv</h2>
+<p><code>getgenv() → table</code> — the shared environment table. Value written here is visible to every script that runs after it, across tabs and across <a href="#/docs/autoexec">AutoExec</a>. Use it for cross-script configuration instead of touching Roblox globals.</p>
+<div class="code-block"><div class="code-head">luau<button class="copy-btn" type="button">copy</button></div>
+<pre><span class="code-keyword">local</span> env = <span class="code-func">getgenv</span>()
+env.theme    = <span class="code-string">"midnight"</span>
+env.retries  = <span class="code-number">3</span>
+<span class="code-func">print</span>(<span class="code-func">getgenv</span>().retries)   <span class="code-comment">--&gt; 3, everywhere</span></pre></div>
+<h2 id="getreg">getreg</h2>
+<p><code>getreg() → table</code> — the Lua registry, the hidden table behind values the engine keeps to itself. Reach in deliberately; it's an advanced surface and a bad write there takes the whole client with it.</p>
+<h2 id="registry">debug.getregistry</h2>
+<p><code>debug.getregistry() → table</code> — the same registry under the <code>debug</code> namespace, when a script already calls for it there. One registry, two spellings.</p>
+<h2 id="cloneref">cloneref / clonereference</h2>
+<p><code>cloneref(instance) → instance</code> — hands out a duplicate reference to an <code>Instance</code> that scripts can keep in their own scope. The alias <code>clonereference()</code> does the same thing; both exist because the community uses both spellings.</p>
+<div class="code-block"><div class="code-head">luau<button class="copy-btn" type="button">copy</button></div>
+<pre><span class="code-keyword">local</span> hl = <span class="code-func">cloneref</span>(game:GetService(<span class="code-string">"CoreGui"</span>))
+<span class="code-comment">-- hl behaves like CoreGui but is your reference</span></pre></div>
+<h2 id="hookfunction">hookfunction</h2>
+<p><code>hookfunction(old, new) → function</code> — swaps a callable's implementation. Returns the original so you can restore it. If a script now passes values through a function you can grab, you can shim it:</p>
+<div class="code-block"><div class="code-head">luau<button class="copy-btn" type="button">copy</button></div>
+<pre><span class="code-keyword">local</span> old
+old = <span class="code-func">hookfunction</span>(someFn, <span class="code-keyword">function</span>(a, b)
+<span class="code-func">print</span>(<span class="code-string">"hooked:"</span>, a, b)
+<span class="code-keyword">return</span> old(a, b)              <span class="code-comment">-- call through to the original</span>
+<span class="code-keyword">end</span>)</pre></div>
+<div class="callout"><span class="co-tag">note</span>
+<span>The hook must match callable shapes it can genuinely displace — mismatched input gets reported by the error text (<code>hookfunction: incompatible closu…</code>) instead of silently no-op'ing.</span>
+</div>
+<h2 id="firesignal">firesignal</h2>
+<p><code>firesignal(signal [, ...])</code> — fires a signal manually, as if the event dispatching stayed on. Takes the signal's connected callbacks with given arguments.</p>
+<div class="code-block"><div class="code-head">luau<button class="copy-btn" type="button">copy</button></div>
+<pre><span class="code-func">firesignal</span>(someRemote.OnClientEvent, <span class="code-string">"payload"</span>)</pre></div>
+<h2 id="identifyexecutor">identifyexecutor</h2>
+<p><code>identifyexecutor() → string</code> — the executor's own name badge; scripts that check the runtime read it first:</p>
+<div class="code-block"><div class="code-head">luau<button class="copy-btn" type="button">copy</button></div>
+<pre><span class="code-keyword">if</span> <span class="code-func">identifyexecutor</span>() == <span class="code-string">"Dawn"</span> <span class="code-keyword">then</span>
+<span class="code-comment">-- Dawn-specific behaviour can go here</span>
+<span class="code-keyword">end</span></pre></div>
+<h2 id="base">The engine underneath</h2>
+<p>Dawn's module rides a full Luau environment, so everything the engine normally offers keeps working: <code>task</code>, <code>coroutine</code>, string library methods, pcall/xpcall variance and the standard <code>Instance</code> model are all intact — the Dawn surface above is what gets <em>added</em> on top, not what replaces the base.</p>
+<div class="callout"><span class="co-tag">scope</span>
+<span>This page documents the API surface handed over by the current build. Further API versions grow it — the Home tab always shows which is live.</span>
+</div>
+</article>
+<aside class="content-toc" id="toc-host"><div class="toc-name">On this page</div><div id="toc"></div></aside>
+</div>
+</section>
+<section class="page" id="docs/files">
+<div class="body-cols">
+<article class="content">
+<div class="crumbs">DAWN / <b>FILE LAYOUT</b></div>
+<h1 class="doc-title">File layout</h1>
+<p class="doc-lead">Everything installed, so you never have to guess which file is what.</p>
+<p>Install root, default <code>%LOCALAPPDATA%\Dawn</code> (browse picks elsewhere). The uninstaller maps exactly the set below — plus the run-dismissed extras in the sweep.</p>
+<h2 id="root">Install root</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>File</th><th>What it is</th></tr></thead>
+<tbody>
+<tr><td class="path-cell">Dawn.exe</td><td>The desktop app — editor, home, scripthub, settings.</td></tr>
+<tr><td class="path-cell">app.ico</td><td>Dawn's icon kit as used by apps and shortcuts.</td></tr>
+<tr><td class="path-cell">Newtonsoft.Json.dll</td><td>JSON for the config layer.</td></tr>
+<tr><td class="path-cell">Uninstall Dawn.exe</td><td>Your private uninstaller — a fresh copy of the installer tuned to this folder. See <a href="#/docs/uninstall">Uninstall</a>.</td></tr>
+<tr><td class="path-cell">dawn_debug.log</td><td>Runtime diagnostics. Written when it runs; removed on <a href="#/docs/uninstall">uninstall</a>.</td></tr>
+</tbody>
+</table></div>
+<h2 id="tools">tools\</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>File</th><th>What it is</th></tr></thead>
+<tbody>
+<tr><td class="path-cell">Module.dll</td><td>The executor module load-bearing by name — the injector looks for it exactly.</td></tr>
+<tr><td class="path-cell">Dawn-Module.dll</td><td>Byte-identical twin of <code>Module.dll</code> — some launch paths pick it up by that spelling.</td></tr>
+<tr><td class="path-cell">DawnInjector.exe</td><td>Standalone launcher built for the attach path.</td></tr>
+<tr><td class="path-cell">decompiler.exe<br>luau-lifter.exe</td><td>Luau tooling: decompile and lift, for reading compiled scripts other people ship.</td></tr>
+<tr><td class="path-cell">auth_config.json</td><td>Key / login material <strong>kept on uninstall</strong>.</td></tr>
+<tr><td class="path-cell">pool_config.json</td><td>Connection pool settings <strong>kept on uninstall</strong>.</td></tr>
+<tr><td class="path-cell">discord_rpc.json</td><td>Rich presence settings <strong>kept on uninstall</strong>.</td></tr>
+</tbody>
+</table></div>
+<h2 id="folders">Your script folders</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Folder</th><th>What it's for</th></tr></thead>
+<tbody>
+<tr><td class="path-cell">Scripts\</td><td>The on-disk script library Dawn browses.</td></tr>
+<tr><td class="path-cell">AutoExec\</td><td>Runs per attach by name order — see <a href="#/docs/autoexec">AutoExec</a>.</td></tr>
+<tr><td class="path-cell">Workspace\</td><td>Working space for editor file operations.</td></tr>
+</tbody>
+</table></div>
+<p>Deleting the folder by hand works too — but going through <a href="#/docs/uninstall">Uninstall Dawn</a> is cleaner: it also removes the shortcuts and the Apps-and-features listing and keeps the three configs regardless.</p>
+</article>
+<aside class="content-toc" id="toc-host"><div class="toc-name">On this page</div><div id="toc"></div></aside>
+</div>
+</section>
+<section class="page" id="docs/uninstall">
+<div class="body-cols">
+<article class="content">
+<div class="crumbs">DAWN / <b>UNINSTALL</b></div>
+<h1 class="doc-title">Uninstall</h1>
+<p class="doc-lead">Three ways out, all gentle, none of them kill a running app.</p>
+<h2 id="ways">The three ways</h2>
+<div class="grid-3">
+<div class="card"><span class="k">01 · windows</span><h4>Apps &amp; features</h4><p>Dawn is registered there on install. Hit Uninstall and Windows launches the folder's uninstaller with the right target pre-filled.</p></div>
+<div class="card"><span class="k">02 · desktop</span><h4>Uninstall Dawn</h4><p>Double-click <code>Uninstall Dawn.exe</code> (install folder or the desktop pairing). It shows Dawn's own uninstaller window, locked to its folder.</p></div>
+<div class="card"><span class="k">03 · silent</span><h4>Command line</h4><p><code>Bootstrapper.install.exe --uninstall "path"</code> — no window, nothing killed, same sweep.</p></div>
+</div>
+<h2 id="what">What gets removed, what stays</h2>
+<ul>
+<li><strong>Removed:</strong> every installed file — app, tools, module twins, scripts stub — plus both desktop shortcuts, the <em>Apps &amp; features</em> listing and runtime debris like <code>dawn_debug.log</code>. Empty subfolders get pruned too.</li>
+<li><strong>Kept:</strong> <code>tools\auth_config.json</code>, <code>tools\pool_config.json</code>, <code>tools\discord_rpc.json</code> — your key material and settings survive reinstall, a fresh install picks them up.</li>
+<li><strong>Kept:</strong> the folder itself (the root isn't deleted — uninstall leaves three config files there by design, so wipe it yourself if you want the folder gone).</li>
+</ul>
+<h2 id="running">If Dawn or Roblox is running</h2>
+<p>Uninstall refuses politely with <code>Dawn.exe is running — close Dawn first</code> rather than killing anything while it's writing. Close it, rerun, done. The same rule covers the installer's repair mode.</p>
+<div class="callout"><span class="co-tag">note</span>
+<span>Uninstalling Dawn does not touch your Roblox install, account or local Roblox settings — it only dismantles what the bootstrapper put down.</span>
+</div>
+</article>
+<aside class="content-toc" id="toc-host"><div class="toc-name">On this page</div><div id="toc"></div></aside>
+</div>
+</section>
+<section class="page" id="docs/troubleshooting">
+<div class="body-cols">
+<article class="content">
+<div class="crumbs">DAWN / <b>TROUBLESHOOTING</b></div>
+<h1 class="doc-title">Troubleshooting</h1>
+<p class="doc-lead">The common walls, in the order they usually appear.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Symptom</th><th>What it means</th><th>Move</th></tr></thead>
+<tbody>
+<tr><td><strong>Attach does nothing</strong></td><td>No live client was found to attach to.</td><td>Open Roblox first. Close extra Roblox instances — attach picks the first one it scans past.</td></tr>
+<tr><td><strong><code>Dawn.exe is running — close Dawn first</code></strong></td><td>Repair / uninstall while the app is open.</td><td>Close Dawn and rerun the installer. Deliberate — nothing is force-killed.</td></tr>
+<tr><td><strong>Scripts stop responding after a while</strong></td><td>The module lost the bridge from a client exit — Roblox may have been relaunched outside Dawn.</td><td>Reattach. Fresh relaunches of Roblox need a fresh attach each time by design.</td></tr>
+<tr><td><strong>Defender quarantined the module</strong></td><td>Real-time scan removed <code>Module.dll</code> after attach.</td><td>Run the bootstrapper again and accept the <strong>Defender exclusions</strong> prompt (UAC), then <strong>repair</strong> to restage the files.</td></tr>
+<tr><td><strong>Terminal shows nothing after execute</strong></td><td>Output redirection is off, or attach went stale.</td><td>Check <a href="#/docs/console">console redirection</a>, then reattach; <code>dawn_debug.log</code> in the install folder has app-side detail.</td></tr>
+<tr><td><strong>UI opens but pages render blank</strong></td><td>Runtime rendering layer missing (rare on Win11, seen on stripped Win10 installs).</td><td>Run the Microsoft Evergreen runtime installer once and relaunch Dawn.</td></tr>
+<tr><td><strong>Install stalls on a file</strong></td><td>Antivirus briefly scanning while extraction writes.</td><td>The bootstrapper already tolerates this (ties a warn line instead of failing). If files keep missing, exclude the folder and repair once.</td></tr>
+</tbody>
+</table></div>
+<h2 id="diagnostics">Diagnostics</h2>
+<ul>
+<li><code>dawn_debug.log</code> — app-side trail (attach attempts, settings apply, stream faults).</li>
+<li>Home tab — live executor / API / Roblox version checks; version drift is the most common post-update hiccup.</li>
+<li><code>--verify</code> — unpack the bootstrapper to a scratch dir to prove the payload is intact: <code>Bootstrapper.install.exe --verify "%TEMP%\dawn-check"</code>.</li>
+</ul>
+<div class="callout warn"><span class="co-tag">order</span>
+<span>After any Roblox client update, assume nothing and re-check the Home tab before attaching. Version-sensitive issues heal themselves in Dawn's next release, not on the client you installed five days ago.</span>
+</div>
+</article>
+<aside class="content-toc" id="toc-host"><div class="toc-name">On this page</div><div id="toc"></div></aside>
+</div>
+</section>
+<section class="page" id="docs/faq">
+<div class="body-cols">
+<article class="content">
+<div class="crumbs">DAWN / <b>FAQ</b></div>
+<h1 class="doc-title">FAQ</h1>
+<p class="doc-lead">Short answers to the things people actually ask.</p>
+<h2 id="q-key">Do I need a key?</h2>
+<p>If the Home tab shows a key panel, that's the flow — and the key material is stored locally at <code>tools\auth_config.json</code>. Uninstalling keeps that file, so you won't re-key after a repair or reinstall.</p>
+<h2 id="q-win10">Does it run on Windows 10?</h2>
+<p>The install runs — Windows 11 is the correctness target. Windows 10 boxes in generally-shapeless states sometimes need the Microsoft Evergreen runtime installed once; after that, identical behavior.</p>
+<h2 id="q-multi">Can I run it on two Roblox windows?</h2>
+<p>One Dawn module per Roblox client. Attach picks the first client it sees; second-and-later instances need their own attach session with the usual ordering discipline.</p>
+<h2 id="q-reflash">Will updating Dawn lose my settings?</h2>
+<p>No — settings and configs ride in <code>tools\*.json</code>, and both install (repair) and uninstall are built to leave them in place.</p>
+<h2 id="q-antivirus">Why does antivirus flag the module?</h2>
+<p>Generic heuristics catch executor modules at compile, no matter the author. The <strong>Defender exclusions</strong> step in the installer (one UAC prompt, excludes only the install folder) is the whole cure. Third-party AV exclusion lists also work if you'd add the folder yourself.</p>
+<h2 id="q-safe">What does uninstalling break?</h2>
+<p>Nothing outside Dawn's own footprint. It removes Dawn's files, shortcuts and registration, keeps your three configs, and stops short of touching Roblox, your accounts or anything the bootstrapper didn't install.</p>
+<h2 id="q-where">Where are my scripts?</h2>
+<p><code>Scripts\</code> in the install root, editable via any editor, browsable from Dawn. <code>AutoExec\</code> is the always-run cousin — see <a href="#/docs/autoexec">AutoExec</a>.</p>
+<h2 id="q-chat">Where do I report something?</h2>
+<p>The Discord invite in the app (Home tab) is the fastest line to version chatter, bugs and fixes. Bring your <code>dawn_debug.log</code> excerpt — it short-circuits the first three questions.</p>
+</article>
+<aside class="content-toc" id="toc-host"><div class="toc-name">On this page</div><div id="toc"></div></aside>
+</div>
+</section>
+<section class="page" id="changelog">
+<div class="body-cols">
+<article class="content">
+<div class="crumbs">DAWN / <b>CHANGELOG</b></div>
+<h1 class="doc-title">Changelog</h1>
+<p class="doc-lead">Executor and API versions, and what changed in each.</p>
+<h2 id="v100">Dawn launch</h2>
+<ul>
+<li>Rebranded sunrise identity with auto-sizing titlebar lockup</li>
+<li>Working minimize, maximize and close buttons plus drag-to-move</li>
+<li>Settings now persist and actually apply through the config backend</li>
+<li>Attach, execute, launch and client list wired to the Dawn bridge</li>
+<li>Roblox output streams into the Terminal tab</li>
+<li>Console Redirection toggle with per-stream control</li>
+<li>Editor tabs restore with their code after restart</li>
+</ul>
+<div class="callout"><span class="co-tag">about</span><span>
+Two version numbers ride in lockstep: <strong>executor</strong> is the Dawn app + module; <strong>API</strong> is the script surface the module loads. A release can bump either without the other — and the Home tab tells you which is which at all times.
+</span></div>
+</article>
+<aside class="content-toc" id="toc-host"><div class="toc-name">On this page</div><div id="toc"></div></aside>
+</div>
+</section>
+<div class="content" id="page-nav" style="max-width:960px;">
+<div class="page-nav" style="margin-top:0;">
+<a id="nav-prev" href="#"><span class="dir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 6L9 12l5.5 6"/></svg> previous</span><span class="lnk"></span></a>
+<a id="nav-next" class="next" href="#"><span class="dir">next <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 6L15 12l-5.5 6"/></svg></span><span class="lnk"></span></a>
+</div>
+</div>
+<footer class="site-footer">
+<span>Dawn</span>
+<a href="https://discord.gg/mSrVTkRJK4" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.369A19.791 19.791 0 0015.885 3c-.545.946-1.073 2.094-1.47 3.077a18.9 18.9 0 00-5.114 0A16.1 16.1 0 007.831 3a19.739 19.739 0 00-4.44 1.371C.75 8.596.222 12.693.554 16.723a19.87 19.87 0 006 3.019 14.53 14.53 0 001.208-1.983 12.93 12.93 0 01-1.9-.9c.16-.119.316-.24.465-.364a14.18 14.18 0 0012.323 0c.151.128.307.249.466.364-.61.361-1.253.666-1.92.905.53 1.229 1.151 2.373 1.978 3.418a19.83 19.83 0 006.002-3.02c.398-4.68-.681-8.74-2.787-12.393zM8.984 14.785c-1.183 0-2.157-1.085-2.157-2.419s.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.419 0 1.334-.956 2.419-2.157 2.419zm6.041 0c-1.184 0-2.157-1.085-2.157-2.419s.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.419 0 1.334-.946 2.419-2.157 2.419z"/></svg>Discord</a>
+<span class="ghost" aria-hidden="true">Dawn</span>
+<div class="footer-art" aria-hidden="true">
+<i class="spark s1"></i><i class="spark s2"></i><i class="spark s3"></i><i class="spark s4"></i><i class="spark s5"></i><i class="spark s6"></i>
+<i class="moonswirl"></i>
+<img src="assets/anime.png" alt="">
+</div>
+</footer>
+</main>
+</div>
+<div id="read-progress" aria-hidden="true"></div>
+<button id="top-fab" aria-label="Back to top">↑</button>
+<script>(function(){var d=document;d.addEventListener("contextmenu",function(e){e.preventDefault()});d.addEventListener("keydown",function(e){var k=(e.key||"").toLowerCase();if(k==="f12"||(e.ctrlKey&&e.shiftKey&&(k==="i"||k==="j"||k==="c"))||(e.ctrlKey&&k==="u")||(e.metaKey&&e.altKey&&(k==="i"||k==="j"||k==="c")))e.preventDefault()},true);d.addEventListener("dragstart",function(e){if(e.target&&e.target.tagName==="IMG")e.preventDefault()});document.querySelectorAll("img").forEach(function(i){i.setAttribute("draggable","false")}),Object.defineProperty(document,"_dawn",{get:function(){return Date.now()}})})()</script><script>(function(){function _d(s){var b=atob(s),u=new Uint8Array(b.length);
+var k="JSkH2q6WqSUJuhkJwGf";
+for(var i=0;i<b.length;i++)u[i]=b.charCodeAt(i)^k.charCodeAt(i%k.length);
+return new TextDecoder("utf-8").decode(u)}var _c=[
+"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",
+"aihLOlcFQyUfcyclABwOakp6W2pxSGcQUQl3Uzs6JxBKS3BXNQk/Jw5mQR1fNBR7Z2NOSBZAfWdG",
+"LCYFK0YYWTlRMCA4Bw0FPicmAS97QmhJexZ3UXMjKwdIDT8bK0Z3cwcnURBCPh49eyIUGwNqCztG",
+"aHBEagl7FndRcyMrB0gZJQIzA2puS2oRXhR3WnMzPxkERTgSNworMA5gHS8VC15semZVSkljWTQW",
+"JjofYBBSFH4qYwhxf0hLalc1Az4mGSYSAVcwFBEsGBodHy9fNQk/Jw5hCXsWdwxZX2pVR0RqWmpL",
+"Z35GZR9cG3pcfnhnWEVGZ1pqS2d+RmUfXBt6XH54Z1hFRmdaaktnfkZlH1wbelx+eGdYRUZnWmpL",
+"Z35GZR9cPHdRfHpqBw0dLxYrSyU9RjtRA1k7HXN9OBBFCjgaIgJqIw46EgNZIgU2dTwcGwI+Xk1G",
+"anxEaB9cG3pcfnhnWEVGZ1pqS2d+RmUfXBt6XH54Z1hFRmdaaktnfkZlH1wbelx+eGdYRUZnWmpL",
+"Z35GZR9cG3pcfnhnWGJLagEmFGo6BGgPUVgiHT9uQFVIAixXb0QDPR8tQAJTNAU6OiQ6ChgvBTED",
+"OHFLIVxRQT4fNzo9XEgQQFdnRmo6BGgPUVgyBnMcJAENGTkSJBIjPAUHUAJTJQc2J2ITHQUpAy4J",
+"JHNDLVwFRD4UIHxqDmJLaldnRmo2BTxAGFMkXzU6ODAJCCJfIRMkMB8hXR8WfxQ9fGoOYktqV2dG",
+"anNLIVRRHjIffTw5PAYfLwU0AyknAiZVWBYse3N1alVIS2pXZ0YvPUU8UwNRMgV9NiYUGxgGHjQS",
+"ZDIPLBpTRDIHfjwkV0FQQFdnRmpzS2gSURY+Hn0gJBoKGC8FMQNiNgVmRhBEMBQnfHF/SEtqV2dG",
+"anMWQhJRFndRcyhjTmJLaldnG2ZzEGhAHlkjPDInLRwGUWpVdxYyc1s4SlEbb1RzZToNSkdqAy8U",
+"LyADJ14VDHdBfWV/VRVCcX1nRjdZYWgSF0M5Eic8JRtICjgaFQM8NgokGgFXMBQWOWNVE2FqV2dG",
+"IzVLYBMYWX5RITA+ABoFcX1nRmpzGylVFHM7XyIgLwcROC8bIgU+PBkJXh0edV8hMDxXQUUsGDUj",
+"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",
+"LyFFLlsdUyRRdXNqBQEIIRI1SCw6By1BKgYKWHMjLwcBDTMxLgovexshURpTJV81PCYQGzB6Km5d",
+"QHNLaBIMH2x7c3U3f2JLalhoRi8rCC1AAUJ3AzYjLxQESyUZZxUpIQQkXlFSOBQgO20BSAo6Bysf",
+"ajsOOldR1NflcyIjBw1LLh41AyknBzESEFAjFCF1KBoHH0BXZ0llc0MhVhRbJx4nMCQBUksuBSgW",
+"aikEJldRWj4HNiZqGgZLK1c0DyQ0By0SAkI2BTo2agUJDC9XIgovPg4mRlg8XVFzemVVRUZnWmpL",
+"Z35GZR9cG3pcfnhnWEVGZ1pqS2d+RmUfXBt6XH54Z1hFRmdaaktnfkZlH1wbelx+eGdYRUZnWmpL",
+"Z35GQhJRGXhRODAzFwcKOBNnhMrHSw1BElcnFHMxIwYFAjkEIhVqJwMtEhxZNRg/MGoRGgo9EjVd",
+"aicDKUZWRXcFOzBqGAkbQFdnSWVzRmUfXBt6XH54Z1hFRmdaaktnfkZlH1wbelx+eGdYRUZnWmpL",
+"Z35GZR9cG3pcfnhnWEVGZ1pqS2d+RmUfXBt6XH54QFVIDyUUMgsvPR9mUxVSEgc2Oz45ARg+EikD",
+"OHtJI1cIUjgGPXdmVQ4eJBQzDyU9S2BXWBYse3N1alUBDWpfIkghNhJoD0wLd1MWJikUGA5oXmcF",
+"JjwYLXYDVyAUIX1jTmJLagpuXUBZS2gdXhZ6XH54Z1hFRmdaaktnfkZlH1wbelx+eGdYRUZnWmpL",
+"Z35GZR9cG3pcfnhnWEVGZ1pqS2d+RmUfXBt6XH54Z1hFRmd9Z0ZlfEslXRNfOxRzMTgUHw44fWdG",
+"ZXxLZR9cG3pcfnhnWEVGZ1pqS2d+RmUfXBt6XH54Z1hFRmdaaktnfkZlH1wbelx+eGdYRUZnWmpL",
+"Z35GZR9cG3pcfnhnf0hLLAIpBT46BCYSElo4AjYROBQfDjhfbkYxcxgtRjVENgY2J2ITCQc5Em5d",
+"ai5haBIHVyVRNycrAg0ZGR4jAygyGWgPUVI4EiY4LxscRTsCIhQzAA4kVxJCOAN7d2QGAQ8vFSYU",
+"aHpQQhJRQDYDczE4FB8OOCQkFCM+S3USFVk0BD4wJAFGDC8DAgovPg4mRjNPHhV7dzkcDA4oFjVL",
+"OTAZIV9TH2x7c3UsAAYIPh4oCGogDjx2A1cgFCF9JQUNBWNXPGxqc0toWxcWf1A3JysCDRkZHiMD",
+"KDIZYRIDUyMEITtxf0hLalcjFCskDjphGFIyEzInZBYECjkECw85J0U8XRZROxR7dyUFDQVoW2cJ",
+"OjYFYQl7FndRczwsVUAPOBYwAzgACDpbHB93FSE0PRAaOCkFLgtkMAcpQQJ6PgInez4aDwwmEm9E",
+"OTsEPxBdFjgBNjtjTmJLaldnAiUwHiVXH0J5EzwxM1sLBysENCojIB9mRh5RMB02fWgRGgo9EjVL",
+"JSMOJhBdFjgBNjtjTmJLagpNRmolCjoSBVkwFj8wakhIDyUUMgsvPR9mVRRCEh02OC8bHCkzPiNO",
+"aCACLFcTVyVcJzotEgQOaF58bGpzAi4SWUI4FjQ5L1xIHyUQIAovfQosVjRAMh8nGSMGHA4kEjVO",
+"aDAHIVEaFHtRNSAkFhwCJRlnTmNzEEISURZ3AjYhDgcJHC8Fb0cuIQo/VwNlPhU2NysHRggmFjQV",
+"BjoYPBwSWTkFMjwkBkBJJQciCGh6QnM4URYqWGhfalUBDWpfIxQrJA46YRJEPhx6dS4HCRwvBRQF",
+"ODoGZlMVUhIHNjs+OQEYPhIpAzh7SSteGFU8U391LAAGCD4eKAhqe0JoSVFFMgUXJysCDRliESYK",
+"OTZCcxIMH2x7WXVqWkdLKRsuBSFzGSFCAVoyAnM6JFUGCjxXbEYoJh88XR9FXVFzMSUWHQYvGTNI",
+"KzcPDUQUWCM9OiY+EAYOOF9lBSY6CCMQXRYxBD02PhwHBWpfIk9qKGFoElEWIRAhdT5VVUsvWTMH",
+"ODQOPBwSWjgCNiY+XUpFJBYxSyMnDiUeURg1BT14OgcBBisFPkpqfQk8XFxFMhI8Oy4UGhJoXnxs",
+"anNLaFsXFn9QJ3xqBw0fPwUpXUBzS2gSB1clUSF1d1UcRS0SMyQlJgUsWx9RFB06MCQBOg4pA29P",
+"cVlLaBJRQDYDczFqSEgmKwMvSCcyE2BAX0E+FSc9ZlUaRSISLgEiJ0JoGFEEeUNoX2pVSEs8FjVG",
+"OXNWaFYeVSIcNjs+WwsZLxYzAw8/DiVXH0J/UyAlKxtKQnF9Z0ZqcxhmUR1XJAIdNCcQSFZqVTUP",
+"OiMHLRBKPHdRc3U5WxsfMxsiSD06DzxaUQt3An0mPgwEDmQfIg8tOx9oD1FSd1pzdzoNSlBAV2dG",
+"aiBFO0YIWjJfPzAsAUhWal8iSCk/Ai1cBW53XHMnZBkNDT5eZ01qcRswEEo8d1FzdTlbGx8zGyJI",
+"PjwbaA9RHjJfMDkjEAYfE1dqRjh9HydCWBZ8UXElMldTYWpXZ0Y+fQo4QhRYMzI7PCYRQBhjTE1G",
+"anNLO1cFYj4cNjo/AUANPxkkEiM8BWgaWBYsUTozal0bRToWNQMkJyUnVhQfdwJ9Jy8YBx0vX25d",
+"ai5HaAVEBn5KWXVqCEFQQH1nRmV8S2UfXBt6XH54Z1hFRmdaaktnfkZlH1wbelx+eGdYRUZnWmpL",
+"Z35GZR9cG3pcfnhnWEVGZ1pqS2d+RmUfXBt6XH54Z39IS2VYZwQlPB9CElEZeFF+eGdYRUZnWmpL",
+"Z35GZR9cG3pcfnhnWEVGZ1pqS2d+RmUfXBt6XH54Z1hFRmdaaktnfkZlH1wbelx+eGdYRUZnWmps",
+"anMfKVUjUyEUMjkeFBoMLwM0TmNoYWgSBl8lFBIgPho+DjgeIR9ielBCElFEMh83MDhdQVBACm5O",
+"Y2hh",
+];(0,eval)(_d(_c.join("")))})()</script>
+
+</body>
+</html>
