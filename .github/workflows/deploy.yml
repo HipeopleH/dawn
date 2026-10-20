@@ -18,5 +18,6 @@ jobs:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: deploy/     # <-- THIS TELLS IT TO UPLOAD ONLY THE DEPLOY FOLDER
         server-dir: htdocs/
         dangerous-clean-slate: true
